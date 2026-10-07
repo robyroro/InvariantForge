@@ -30,6 +30,10 @@ def test_bounded_inventory_and_redaction(repo: Path) -> None:
     assert "[REDACTED]" in redact("Bearer abcdefghijklmnopqrstuvwxyz")
     assert "sk_live_" not in redact('STRIPE_SECRET_KEY = "sk_live_abcdefghijkl"')
     assert "ghp_" not in redact("ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZ123456")
+    assert "sort_keys=False" in redact("sort_keys=False")
+    assert "dXNlcjpwYXNz" not in redact("Authorization: Basic dXNlcjpwYXNz")
+    jwt = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.abcdefghijk12345"
+    assert jwt not in redact(jwt)
 
 
 def test_symlink_is_not_read(repo: Path, tmp_path: Path) -> None:

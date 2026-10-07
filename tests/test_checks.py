@@ -40,7 +40,15 @@ def test_ast_check_detects_alias_and_literal_true(repo: Path) -> None:
     assert check_one(repo, item).outcome == "fail"
     (repo / "app.py").write_text("import subprocess\nsubprocess.run('x', **{'shell': True})\n")
     assert check_one(repo, item).outcome == "fail"
+    (repo / "app.py").write_text(
+        "import subprocess\nsubprocess.run('x', **{'shell': False, 'shell': True})\n"
+    )
+    assert check_one(repo, item).outcome == "fail"
     (repo / "app.py").write_text("import subprocess\nsubprocess.run('x', **options)\n")
+    assert check_one(repo, item).outcome == "not_assessed"
+    (repo / "app.py").write_text(
+        "import subprocess\nsubprocess.run('x', **{'shell': False, **options})\n"
+    )
     assert check_one(repo, item).outcome == "not_assessed"
 
 

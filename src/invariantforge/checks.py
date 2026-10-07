@@ -52,15 +52,20 @@ def _call_matches(
             return "unknown"
         if kw.arg is None:
             if isinstance(kw.value, ast.Dict):
+                unpacked: Literal["match", "unknown", "none"] = "none"
                 for key, entry in zip(kw.value.keys, kw.value.values, strict=True):
-                    if isinstance(key, ast.Constant) and key.value == keyword:
+                    if key is None or not isinstance(key, ast.Constant):
+                        unpacked = "unknown"
+                    elif key.value == keyword:
                         if value is None:
-                            return "match"
-                        if isinstance(entry, ast.Constant):
-                            return "match" if entry.value == value else "none"
-                        return "unknown"
-                if any(not isinstance(key, ast.Constant) for key in kw.value.keys):
-                    unknown = True
+                            unpacked = "match"
+                        elif isinstance(entry, ast.Constant):
+                            unpacked = "match" if entry.value == value else "none"
+                        else:
+                            unpacked = "unknown"
+                if unpacked == "match":
+                    return "match"
+                unknown = unknown or unpacked == "unknown"
             else:
                 unknown = True
     return "unknown" if unknown else "none"

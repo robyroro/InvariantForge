@@ -18,6 +18,8 @@ another review process. All modes create proposed records only.
 Review `show INV-001`, including scope, strength, sources, and bypasses, before
 running `approve`. Approval requires a concrete rule. Reject unsupported
 properties or implement a meaningful regression test in the application.
+`deprecate` records an explicit retirement of an approved rule. A trusted
+baseline check flags that retirement for review.
 
 The v0.1 enforcement DSL has four strategies:
 

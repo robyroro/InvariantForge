@@ -226,6 +226,16 @@ def reject(invariant_id: str, path: Annotated[Path, typer.Option("--path")] = Pa
 
 
 @app.command()
+def deprecate(invariant_id: str, path: Annotated[Path, typer.Option("--path")] = Path(".")) -> None:
+    """Record an explicit retirement of an approved invariant."""
+    try:
+        item = transition(_root(path), invariant_id, Status.deprecated)
+        console.print(f"Deprecated {item.id}")
+    except PolicyError as exc:
+        _error(exc)
+
+
+@app.command()
 def generate(path: Annotated[Path, typer.Option("--path")] = Path(".")) -> None:
     """Write a pytest entrypoint that runs the approved deterministic rules."""
     try:

@@ -130,6 +130,15 @@ def test_static_provider_proposes_without_model(repo: Path) -> None:
     assert proposals[0].enforcement.strategy == "python_no_call"
 
 
+def test_static_provider_prefers_owned_source_scope(repo: Path) -> None:
+    source = repo / "src" / "sample"
+    source.mkdir(parents=True)
+    (source / "runner.py").write_text("import subprocess\n")
+    proposals = StaticProvider().discover_invariants(repo, inventory(repo))
+    assert proposals[0].scope == ["src/**/*.py"]
+    assert proposals[0].sources == ["src/sample/runner.py"]
+
+
 def test_credential_does_not_switch_default_provider(
     repo: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

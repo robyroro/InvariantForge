@@ -83,3 +83,12 @@ def test_reject_missing_enforcement_and_malformed_yaml(repo: Path) -> None:
     (repo / ".invariantforge" / "invariants.yaml").write_text("schema_version: [broken\n")
     with pytest.raises(PolicyError, match="invalid"):
         load(repo)
+
+
+def test_approved_rule_can_be_explicitly_deprecated(repo: Path) -> None:
+    save(repo, [])
+    add_proposals(repo, [proposal()])
+    transition(repo, "INV-001", Status.approved)
+    retired = transition(repo, "INV-001", Status.deprecated)
+    assert retired.status == Status.deprecated
+    assert not retired.approved_and_intact()

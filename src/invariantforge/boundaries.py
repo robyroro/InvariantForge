@@ -119,7 +119,7 @@ def analyze(
             and (line.startswith("+") or line.startswith("-"))
             and not line.startswith(("+++", "---"))
         ):
-            chunks.setdefault(current, []).append(redact(line))
+            chunks.setdefault(current, []).append(line)
     findings: list[Finding] = []
     for path, change in changes:
         lines = chunks.get(path, [])
@@ -148,6 +148,6 @@ def analyze(
             "path or metadata changed",
         )
         findings.append(
-            Finding(redact(path), change, categories, mapped, "possible", evidence[:300])
+            Finding(redact(path), change, categories, mapped, "possible", redact(evidence[:300]))
         )
     return findings, sorted(set(warnings))

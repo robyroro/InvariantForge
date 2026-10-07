@@ -60,6 +60,12 @@ class StaticProvider:
                 sources.append(rel)
         if not sources:
             return []
+        owned_sources = [rel for rel in sources if rel.startswith("src/")]
+        if owned_sources:
+            sources = owned_sources
+            scope = ["src/**/*.py"]
+        else:
+            scope = ["*.py"]
         return [
             Proposal(
                 title="Subprocess calls must not enable a shell",
@@ -71,7 +77,7 @@ class StaticProvider:
                 severity="high",
                 confidence="medium",
                 sources=sources[:30],
-                scope=["**/*.py", "*.py"],
+                scope=scope,
                 statement="No Python subprocess.run call uses shell=True.",
                 enforcement=Enforcement(
                     strategy="python_no_call",
@@ -83,7 +89,8 @@ class StaticProvider:
                 boundaries=["subprocess"],
                 attacker="An actor able to influence a command argument",
                 bypasses=[
-                    "Other subprocess entry points and import aliases require separate review"
+                    "Wrappers, dynamic dispatch and other subprocess entry points "
+                    "require separate review"
                 ],
                 rationale=(
                     "Static syntax detection identified a subprocess import. This is a candidate "

@@ -10,12 +10,9 @@ invariants:
   status: proposed
   confidence: medium
   sources:
-  - examples/demo-app/app.py
   - src/invariantforge/gitops.py
-  - tests/conftest.py
   scope:
-  - '**/*.py'
-  - '*.py'
+  - src/**/*.py
   statement: No Python subprocess.run call uses shell=True.
   enforcement:
     strategy: python_no_call

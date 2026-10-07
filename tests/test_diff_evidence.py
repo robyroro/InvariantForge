@@ -81,6 +81,13 @@ def test_binary_change_is_marked_unassessed(repo: Path) -> None:
     assert any("binary" in warning for warning in warnings)
 
 
+def test_secret_line_is_classified_before_redaction(repo: Path) -> None:
+    (repo / "app.py").write_text("PASSWORD=topsecretvalue\n")
+    findings, _ = analyze(repo, [])
+    assert any("secrets" in finding.categories for finding in findings)
+    assert "topsecretvalue" not in json.dumps([finding.as_dict() for finding in findings])
+
+
 def test_evidence_has_no_source_content(repo: Path) -> None:
     item = policy(repo)
     output, report = prove(repo, [item], repo / "bundle")

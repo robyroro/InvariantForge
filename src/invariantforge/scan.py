@@ -38,9 +38,11 @@ REDACTIONS = [
     re.compile(r"\b(?:gh[pousr][_-]|github_pat[_-]|sk-proj-|sk-)[A-Za-z0-9_-]{12,}\b"),
     re.compile(r"\bAKIA[0-9A-Z]{16}\b"),
     re.compile(r"(?i)\bBearer\s+[A-Za-z0-9._~+/-]{12,}"),
+    re.compile(r"(?i)\b(?:Authorization\s*:\s*)?Basic\s+[A-Za-z0-9+/]+={0,2}"),
+    re.compile(r"\beyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\b"),
     re.compile(
-        r"(?i)\b[A-Z0-9_]*(?:PASSWORD|SECRET|TOKEN|KEY|CREDENTIAL)"
-        r"[A-Z0-9_]*\s*[:=]\s*['\"]?[^\s'\"]{4,}"
+        r"(?i)\b(?:[A-Z0-9]+_)*(?:PASSWORD|SECRET|TOKEN|KEY|CREDENTIAL)"
+        r"(?:_[A-Z0-9]+)*\s*[:=]\s*['\"]?[^\s'\"]{4,}"
     ),
     re.compile(r"(?i)\b(?:postgres|mysql|mongodb)://[^\s@]+@"),
 ]
