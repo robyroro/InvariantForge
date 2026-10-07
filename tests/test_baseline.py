@@ -4,8 +4,10 @@ from pathlib import Path
 
 import pytest
 from conftest import git
+from typer.testing import CliRunner
 
 from invariantforge.checks import baseline_result, run
+from invariantforge.cli import app
 from invariantforge.gitops import GitError
 from invariantforge.models import Enforcement, Invariant, Status
 from invariantforge.store import save, transition
@@ -32,5 +34,10 @@ def test_removed_approved_rule_fails_against_baseline(repo: Path) -> None:
     assert result is not None
     assert result.outcome == "fail"
     assert "INV-001" in result.detail
+    checked = CliRunner().invoke(
+        app,
+        ["check", "--path", str(repo), "--allow-empty", "--baseline-ref", baseline],
+    )
+    assert checked.exit_code == 1
     with pytest.raises(GitError):
         baseline_result(repo, [], "--help")

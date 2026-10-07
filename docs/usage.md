@@ -32,6 +32,10 @@ The v0.1 enforcement DSL has four strategies:
 
 `check --format json` reports `pass`, `fail`, `partial`, `unenforced`, or
 `not_assessed`. With no approved rules, `check` exits 1. Use
+`check --allow-empty` only while bootstrapping a repository. It prints a warning
+and exits 0 when no rule is approved; approved rule failures still exit 1.
+The project CI uses this mode until its first self-invariant is reviewed.
+Use
 `check --baseline-ref <trusted-sha>` in a pull request to reject removed or
 changed approved rules from a protected base revision. New approved rules are
 allowed; intentional changes to existing approved rules require a separate

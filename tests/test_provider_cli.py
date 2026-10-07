@@ -29,6 +29,19 @@ def test_cli_invalid_policy_exits_two(repo: Path) -> None:
     assert result.exit_code == 2
 
 
+def test_allow_empty_only_applies_before_approval(repo: Path) -> None:
+    assert runner.invoke(app, ["init", "--path", str(repo)]).exit_code == 0
+    empty = runner.invoke(app, ["check", "--path", str(repo), "--allow-empty"])
+    assert empty.exit_code == 0
+    assert "no enforcement" in empty.output
+    assert runner.invoke(app, ["discover", "--path", str(repo)]).exit_code == 0
+    assert runner.invoke(app, ["approve", "INV-001", "--path", str(repo)]).exit_code == 0
+    (repo / "app.py").write_text("import subprocess\nsubprocess.run('x', shell=True)\n")
+    checked = runner.invoke(app, ["check", "--path", str(repo), "--allow-empty"])
+    assert checked.exit_code == 1
+    assert "FAIL" in checked.output
+
+
 def test_daybreak_requires_explicit_context_and_previews_without_key(repo: Path) -> None:
     assert runner.invoke(app, ["init", "--path", str(repo)]).exit_code == 0
     missing = runner.invoke(app, ["discover", "--path", str(repo), "--provider", "daybreak"])

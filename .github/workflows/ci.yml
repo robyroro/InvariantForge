@@ -25,8 +25,8 @@ jobs:
       - run: uv run ruff check .
       - run: uv run mypy src
       - run: uv run pytest
-      - run: uv run invariantforge check --format json
+      - run: uv run invariantforge check --format json --allow-empty
         if: github.event_name == 'push'
-      - run: uv run invariantforge check --format json --baseline-ref ${{ github.event.pull_request.base.sha }}
+      - run: uv run invariantforge check --format json --allow-empty --baseline-ref ${{ github.event.pull_request.base.sha }}
         if: github.event_name == 'pull_request'
       - run: uv build

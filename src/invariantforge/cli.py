@@ -277,6 +277,10 @@ def test_approved_invariants() -> None:
 def check(
     path: Annotated[Path, typer.Option("--path")] = Path("."),
     format: Annotated[Literal["text", "json"], typer.Option("--format")] = "text",
+    allow_empty: Annotated[
+        bool,
+        typer.Option("--allow-empty", help="Allow a bootstrap policy with no approved rules"),
+    ] = False,
     baseline_ref: Annotated[
         str | None,
         typer.Option("--baseline-ref", help="Trusted Git revision containing approved policy"),
@@ -302,7 +306,9 @@ def check(
                 console.print("No approved rules were checked.")
             for result in report.results:
                 console.print(f"{result.outcome.upper():12} {result.id}  {result.detail}")
-        if report.failed:
+        if allow_empty and not report.results:
+            typer.echo("No approved invariants; bootstrap check has no enforcement.", err=True)
+        if report.failed and not (allow_empty and not report.results):
             raise typer.Exit(1)
     except (PolicyError, UnsafePathError, GitError, OSError) as exc:
         _error(exc)
