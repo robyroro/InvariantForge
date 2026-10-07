@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "invariantforge"
+version = "0.1.0"
+description = "Versioned security invariants and boundary-aware change review"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+authors = [{name = "Robert Vind-Gardoș"}]
+dependencies = ["typer>=0.15,<1", "pydantic>=2.10,<3", "PyYAML>=6,<7", "rich>=13,<15"]
+
+[project.optional-dependencies]
+daybreak = ["openai>=2,<3"]
+dev = ["pytest>=8,<10", "ruff>=0.12", "mypy>=1.17", "build>=1.2", "types-PyYAML>=6"]
+
+[project.scripts]
+invariantforge = "invariantforge.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/invariantforge"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
