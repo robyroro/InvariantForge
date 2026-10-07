@@ -1,0 +1,25 @@
+schema_version: 1
+repository: .
+languages:
+- Python
+package_managers:
+- uv
+- Python packaging
+frameworks: []
+test_frameworks:
+- pytest
+ci:
+- GitHub Actions
+monorepo: false
+security_docs:
+- SECURITY.md
+- docs/threat-model.md
+architecture_docs:
+- ARCHITECTURE.md
+docker_files: []
+mcp_files: []
+policy_files: []
+dependency_manifests:
+- pyproject.toml
+omitted:
+  oversized: 1

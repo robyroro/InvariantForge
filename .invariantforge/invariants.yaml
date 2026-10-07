@@ -1,0 +1,37 @@
+schema_version: 1
+invariants:
+- schema_version: 1
+  id: INV-001
+  title: Subprocess calls must not enable a shell
+  description: A subprocess launched with shell=True can reinterpret arguments as
+    shell syntax. Review every subprocess call and prohibit this literal configuration.
+  category: subprocess
+  severity: high
+  status: proposed
+  confidence: medium
+  sources:
+  - examples/demo-app/app.py
+  - src/invariantforge/gitops.py
+  - tests/conftest.py
+  scope:
+  - '**/*.py'
+  - '*.py'
+  statement: No Python subprocess.run call uses shell=True.
+  enforcement:
+    strategy: python_no_call
+    target: subprocess.run
+    keyword: shell
+    keyword_value: true
+    function: null
+  enforcement_strength: partial
+  boundaries:
+  - subprocess
+  attacker: An actor able to influence a command argument
+  bypasses:
+  - Wrappers, dynamic dispatch and other subprocess entry points require separate
+    review
+  rationale: Static syntax detection identified a subprocess import. This is a candidate
+    rule, not a finding that shell injection exists.
+  created_at: '2026-10-07T12:54:44.057074Z'
+  updated_at: '2026-10-07T12:54:44.057081Z'
+  approval_digest: null

@@ -101,7 +101,8 @@ def init(
             ],
             "omitted": data.omitted,
         }
-        config.write_text(yaml.safe_dump(overview, sort_keys=False), encoding="utf-8")
+        with config.open("w", encoding="utf-8", newline="\n") as stream:
+            stream.write(yaml.safe_dump(overview, sort_keys=False))
         if not policy_path(root).exists():
             save(root, [])
         console.print(f"Initialized {folder} ({len(data.files)} readable files)")
